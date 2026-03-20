@@ -1,0 +1,41 @@
+.cartSection {
+  padding-top: 140px;
+  min-height: 70vh;
+}
+
+.cartTitle {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.emptyCart p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.shopBtn {
+  display: inline-block;
+  background: var(--coffee-dark);
+  color: white;
+  padding: 16px 40px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 4px;
+  transition: var(--transition-smooth);
+}
+
+.shopBtn:hover {
+  background: var(--coffee-medium);
+}

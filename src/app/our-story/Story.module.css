@@ -1,0 +1,53 @@
+.hero {
+  padding: 160px 0 80px;
+  background: var(--coffee-dark);
+  color: white;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.textBlock {
+  margin-bottom: 60px;
+}
+
+.textBlock h2 {
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+}
+
+.textBlock p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.imageBlock {
+  margin-bottom: 60px;
+}
+
+.imageBlock img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+}

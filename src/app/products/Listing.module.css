@@ -1,0 +1,82 @@
+.banner {
+  padding: 140px 0 60px;
+  background: var(--coffee-cream);
+  text-align: center;
+}
+
+.banner h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.banner p {
+  color: var(--text-secondary);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 40px;
+}
+
+.sidebar {
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  padding-right: 30px;
+}
+
+.filterGroup {
+  margin-bottom: 30px;
+}
+
+.filterGroup h4 {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.filterGroup ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterGroup li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.toolbar p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.toolbar select {
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  font-family: inherit;
+  outline: none;
+}
+
+@media (max-width: 991px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    display: none; /* Hide sidebar on mobile for simplicity, or could be a drawer */
+  }
+}

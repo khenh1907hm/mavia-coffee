@@ -1,0 +1,32 @@
+﻿
+> mavia-coffee@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.2.0 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 4.0s
+  Running TypeScript ...
+  Finished TypeScript in 2.8s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/8) ...
+  Generating static pages using 7 workers (2/8) 
+  Generating static pages using 7 workers (4/8) 
+  Generating static pages using 7 workers (6/8) 
+Γ£ô Generating static pages using 7 workers (8/8) in 424ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /cart
+Γö£ Γùï /contact
+Γö£ Γùï /our-story
+Γö£ Γùï /products
+Γöö ╞Æ /products/[slug]
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
