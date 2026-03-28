@@ -2,45 +2,12 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import ProductGrid from '@/components/ProductGrid/ProductGrid';
 import styles from './Listing.module.css';
+import { mockProducts } from '@/data/products';
+import { supabase } from '@/lib/supabase';
 
-// Using mock data for now, in a real app this would be fetched from Supabase
-const allProducts = [
-  {
-    id: '1',
-    name: 'Son Pacamara - Filter Bean',
-    slug: 'son-pacamara-filter',
-    price: 350000,
-    image_url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Filter Coffee',
-    roast_level: 'Light',
-    flavor_notes: ['Berry', 'Sweet', 'Floral'],
-    brew_methods: ['V60', 'Chemex']
-  },
-  {
-    id: '2',
-    name: 'Espresso Blend - Mavia Signature',
-    slug: 'espresso-blend-signature',
-    price: 280000,
-    image_url: 'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Espresso Blend',
-    roast_level: 'Medium',
-    flavor_notes: ['Chocolate', 'Nutty', 'Caramel'],
-    brew_methods: ['Espresso', 'Moka Pot']
-  },
-  {
-    id: '3',
-    name: 'Cold Brew Blend - Summer Breeze',
-    slug: 'cold-brew-summer',
-    price: 320000,
-    image_url: 'https://images.unsplash.com/photo-1517701604599-bb29b56509d1?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Cold Brew',
-    roast_level: 'Light-Medium',
-    flavor_notes: ['Citrus', 'Stone Fruit', 'Crisp'],
-    brew_methods: ['Cold Brew']
-  }
-];
-
-export default function ProductListing() {
+export default async function ProductListing() {
+  // We prioritize mockProducts for now as per user request for GU series
+  const displayProducts = mockProducts;
   return (
     <main>
       <Header />
@@ -77,14 +44,14 @@ export default function ProductListing() {
             
             <div className={styles.content}>
               <div className={styles.toolbar}>
-                <p>Hiển thị {allProducts.length} sản phẩm</p>
+                <p>Hiển thị {displayProducts.length} sản phẩm</p>
                 <select>
                   <option>Mới nhất</option>
                   <option>Giá: Thấp đến Cao</option>
                   <option>Giá: Cao đến Thấp</option>
                 </select>
               </div>
-              <ProductGrid products={allProducts} />
+              <ProductGrid products={displayProducts} />
             </div>
           </div>
         </div>

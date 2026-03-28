@@ -10,15 +10,16 @@ const Header = () => {
         </div>
         
         <nav className={styles.nav}>
-          <Link href="/">Home</Link>
-          <Link href="/products">Products</Link>
-          <Link href="/our-story">Our Story</Link>
-          <Link href="/contact">Contact</Link>
+          <Link href="/">Trang chủ</Link>
+          <Link href="/products">Sản phẩm</Link>
+          <Link href="/brewing-guide">Hướng dẫn pha</Link>
+          <Link href="/blog">Blog</Link>
+          <Link href="/our-story">Giới thiệu</Link>
         </nav>
         
         <div className={styles.actions}>
           <Link href="/cart" className={styles.cartIcon}>
-            Cart (0)
+            🛒 Giỏ hàng
           </Link>
         </div>
       </div>

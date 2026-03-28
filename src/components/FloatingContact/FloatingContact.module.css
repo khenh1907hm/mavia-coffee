@@ -1,0 +1,52 @@
+.container {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 999;
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.icon:hover {
+  transform: scale(1.1);
+}
+
+.map {
+  background-color: #4285F4;
+}
+
+.zalo {
+  background-color: #0068FF;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.zaloText {
+  font-family: Arial, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.messenger {
+  background-color: #0084FF;
+}
+
+@media (max-width: 768px) {
+  .container {
+    right: 15px;
+    bottom: 20px;
+  }
+}
