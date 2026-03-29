@@ -2,45 +2,29 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import ProductGrid from '@/components/ProductGrid/ProductGrid';
 import styles from './Listing.module.css';
+import { mockProducts } from '@/data/products';
+import { supabase } from '@/lib/supabase';
 
-// Using mock data for now, in a real app this would be fetched from Supabase
-const allProducts = [
-  {
-    id: '1',
-    name: 'Son Pacamara - Filter Bean',
-    slug: 'son-pacamara-filter',
-    price: 350000,
-    image_url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Filter Coffee',
-    roast_level: 'Light',
-    flavor_notes: ['Berry', 'Sweet', 'Floral'],
-    brew_methods: ['V60', 'Chemex']
-  },
-  {
-    id: '2',
-    name: 'Espresso Blend - Mavia Signature',
-    slug: 'espresso-blend-signature',
-    price: 280000,
-    image_url: 'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Espresso Blend',
-    roast_level: 'Medium',
-    flavor_notes: ['Chocolate', 'Nutty', 'Caramel'],
-    brew_methods: ['Espresso', 'Moka Pot']
-  },
-  {
-    id: '3',
-    name: 'Cold Brew Blend - Summer Breeze',
-    slug: 'cold-brew-summer',
-    price: 320000,
-    image_url: 'https://images.unsplash.com/photo-1517701604599-bb29b56509d1?q=80&w=800&auto=format&fit=crop',
-    category_name: 'Cold Brew',
-    roast_level: 'Light-Medium',
-    flavor_notes: ['Citrus', 'Stone Fruit', 'Crisp'],
-    brew_methods: ['Cold Brew']
+export const dynamic = 'force-dynamic';
+
+export default async function ProductListing() {
+  // Fetch real products from Supabase
+  const { data: dbProducts, error } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .order('created_at', { ascending: false });
+
+  // Map database response to match the expected Product structure
+  const displayProducts = (dbProducts && dbProducts.length > 0) 
+    ? dbProducts.map(p => ({
+        ...p,
+        category_name: p.categories?.name || p.category_name || 'Coffee'
+      }))
+    : mockProducts;
+
+  if (error) {
+    console.error('Error fetching products from Supabase:', error);
   }
-];
-
-export default function ProductListing() {
   return (
     <main>
       <Header />
@@ -77,14 +61,14 @@ export default function ProductListing() {
             
             <div className={styles.content}>
               <div className={styles.toolbar}>
-                <p>Hiển thị {allProducts.length} sản phẩm</p>
+                <p>Hiển thị {displayProducts.length} sản phẩm</p>
                 <select>
                   <option>Mới nhất</option>
                   <option>Giá: Thấp đến Cao</option>
                   <option>Giá: Cao đến Thấp</option>
                 </select>
               </div>
-              <ProductGrid products={allProducts} />
+              <ProductGrid products={displayProducts} />
             </div>
           </div>
         </div>

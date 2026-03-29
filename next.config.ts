@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'sonpacamara.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'w.ladicdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fapwsqtxcrydiamyzxgt.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       }
     ],
   },

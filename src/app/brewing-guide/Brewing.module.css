@@ -1,0 +1,244 @@
+.wrapper {
+  background: #fff;
+}
+
+.hero {
+  position: relative;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2000');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.heroTitle {
+  color: #fff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-family: var(--font-playfair), serif;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.introSection {
+  padding: 80px 0 40px;
+}
+
+.introText {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+.introIcons {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.headerIcon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerIcon img {
+  max-width: 100%;
+  max-height: 100%;
+  filter: sepia(0.5) contrast(0.8);
+}
+
+.technicalInfo {
+  border-top: 1px solid #eee;
+  padding-top: 40px;
+}
+
+.infoBlock {
+  margin-bottom: 25px;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.infoBlock strong {
+  color: var(--coffee-dark);
+}
+
+.grindList {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.grindList li {
+  margin-bottom: 5px;
+}
+
+.gridSection {
+  padding: 40px 0 80px;
+}
+
+.gridOuter {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+/* Specific grid layout to match the image: 2-1-2-1-2-1 pattern */
+.gridOuter > div:nth-child(3) {
+  grid-column: span 2;
+}
+
+.gridOuter > div:nth-child(6) {
+  grid-column: span 2;
+}
+
+.gridOuter > div:nth-child(9) {
+  grid-column: span 2;
+}
+
+.tile {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* For full-width tiles, make them slightly less tall so they don't dominate too much */
+.gridOuter > div:nth-child(3),
+.gridOuter > div:nth-child(6),
+.gridOuter > div:nth-child(9) {
+  aspect-ratio: 21 / 7;
+}
+
+.tile:hover {
+  transform: scale(0.99);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.tileContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  z-index: 2;
+  width: 100%;
+}
+
+.tileIcon {
+  width: 160px;
+  height: 160px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Full width tile icons should be a bit bigger/different */
+.gridOuter > div:nth-child(3) .tileIcon,
+.gridOuter > div:nth-child(6) .tileIcon,
+.gridOuter > div:nth-child(9) .tileIcon {
+  width: 140px;
+  height: 140px;
+}
+
+.tileIcon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* Add a subtle drop shadow to white line icons for better legibility on some backgrounds */
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+}
+
+.tileTitle {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-family: var(--font-playfair), serif;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.tileLink {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.footerCTA {
+  padding: 40px 0 120px;
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: #dbb36d;
+  margin: 0 auto 60px;
+}
+
+.bottomDivider {
+  width: 100%;
+  height: 1px;
+  background: #eee;
+  margin-top: 80px;
+}
+
+.ctaTitle {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.ctaText {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  
+  .gridOuter {
+    grid-template-columns: 1fr;
+  }
+  
+  .gridOuter > div:nth-child(n) {
+    grid-column: span 1;
+  }
+  
+  .tile {
+    aspect-ratio: auto;
+    padding: 60px 20px;
+  }
+}

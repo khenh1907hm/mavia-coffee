@@ -2,23 +2,29 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import Image from 'next/image';
 import styles from './Detail.module.css';
+import { supabase } from '@/lib/supabase';
+import { notFound } from 'next/navigation';
 
-// Using mock data for now
-const product = {
-  id: '1',
-  name: 'Son Pacamara - Filter Bean',
-  slug: 'son-pacamara-filter',
-  price: 350000,
-  description: 'Một loại cà phê đặc sản với hương vị thanh tao, chua nhẹ và hậu vị ngọt kéo dài. Hạt được tuyển chọn từ vùng cao nguyên Cầu Đất, nơi có khí hậu và thổ nhưỡng lý tưởng cho giống cà phê Pacamara phát triển.',
-  image_url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=800&auto=format&fit=crop',
-  category_name: 'Filter Coffee',
-  roast_level: 'Light',
-  flavor_notes: ['Berry', 'Sweet', 'Floral', 'Honey'],
-  brew_methods: ['V60', 'Chemex', 'AeroPress'],
-  stock_quantity: 100
-};
+export const dynamic = 'force-dynamic';
 
-export default function ProductDetail() {
+export default async function ProductDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  const { data: product, error } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .eq('slug', slug)
+    .single();
+
+  if (error || !product) {
+    return notFound();
+  }
+
+  // Safe mapping for categories and arrays
+  const categoryName = product.categories?.name || 'Uncategorized';
+  const flavorNotes = Array.isArray(product.flavor_notes) ? product.flavor_notes : [];
+  const brewMethods = Array.isArray(product.brew_methods) ? product.brew_methods : [];
+
   return (
     <main>
       <Header />
@@ -34,14 +40,17 @@ export default function ProductDetail() {
                   width={600} 
                   height={600} 
                   priority
+                  className="object-cover rounded-2xl"
                 />
               </div>
             </div>
             
             <div className={styles.info}>
-              <span className={styles.category}>{product.category_name}</span>
+              <span className={styles.category}>{categoryName}</span>
               <h1 className={styles.title}>{product.name}</h1>
-              <p className={styles.price}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
+              <p className={styles.price}>
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+              </p>
               
               <div className={styles.description}>
                 <p>{product.description}</p>
@@ -52,31 +61,46 @@ export default function ProductDetail() {
                   <span className={styles.specLabel}>Mức độ rang:</span>
                   <span className={styles.specValue}>{product.roast_level}</span>
                 </div>
+                
                 <div className={styles.specItem}>
                   <span className={styles.specLabel}>Hương vị:</span>
                   <div className={styles.tags}>
-                    {product.flavor_notes.map((note, idx) => (
+                    {flavorNotes.map((note: string, idx: number) => (
                       <span key={idx} className={styles.tag}>{note}</span>
                     ))}
                   </div>
                 </div>
+                
                 <div className={styles.specItem}>
                   <span className={styles.specLabel}>Phương pháp pha:</span>
-                  <span className={styles.specValue}>{product.brew_methods.join(', ')}</span>
+                  <span className={styles.specValue}>{brewMethods.join(', ')}</span>
                 </div>
               </div>
               
               <div className={styles.actions}>
                 <div className={styles.quantity}>
-                  <button>-</button>
-                  <input type="number" defaultValue={1} readOnly />
-                  <button>+</button>
+                  <button className="px-3">-</button>
+                  <input type="number" defaultValue={1} readOnly className="w-12 text-center bg-transparent" />
+                  <button className="px-3">+</button>
                 </div>
                 <button className={styles.cartBtn}>THÊM VÀO GIỎ HÀNG</button>
               </div>
             </div>
           </div>
         </div>
+
+        {product.story && (
+          <div className="mt-20 py-16 border-t border-gray-100 bg-coffee-cream/20">
+            <div className="max-w-3xl mx-auto px-6 text-center">
+              <h2 className="font-serif text-3xl text-coffee-dark mb-8 uppercase tracking-widest">
+                Câu Chuyện Phía Sau
+              </h2>
+              <p className="prose prose-coffee max-w-none text-gray-700 leading-relaxed text-lg italic whitespace-pre-line">
+                "{product.story}"
+              </p>
+            </div>
+          </div>
+        )}
       </section>
 
       <Footer />
