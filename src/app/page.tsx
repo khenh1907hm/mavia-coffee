@@ -7,6 +7,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal';
 import { mockProducts } from '@/data/products';
+import { supabase } from '@/lib/supabase';
+
 
 const mockBlogs = [
   {
@@ -35,46 +37,64 @@ const mockBlogs = [
   }
 ];
 
-export default function Home() {
+export default async function Home() {
+  // Fetch real products from Supabase
+  const { data: dbProducts, error } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .order('created_at', { ascending: false });
+
+  // Map database response to match the expected Product structure
+  // Fallback to mockProducts if DB is empty or has issues
+  const products = (dbProducts && dbProducts.length > 0) 
+    ? dbProducts.map(p => ({
+        ...p,
+        category_name: p.categories?.name || p.category_name || 'Coffee'
+      }))
+    : mockProducts;
+
+  if (error) {
+    console.error('Error fetching products from Supabase:', error);
+  }
+
   return (
     <main className={styles.main}>
       <Header />
-      
-      {/* 2. Hero Section */}
+
+      {/* 2. Hero Section - Redesigned Centered Premium Version */}
       <section className={styles.hero}>
         <div className={styles.heroBackground}></div>
-        <div className={`container ${styles.heroContainer}`}>
-          <div className={styles.heroContent}>
-            <ScrollReveal effect="left">
-              <h1 className={styles.heroTitle}>Cà phê nguyên chất – Đậm vị thật</h1>
+        <div className={`container ${styles.heroContainerCentered}`}>
+          <div className={styles.heroContentCentered}>
+            <ScrollReveal effect="fade" duration={1.5}>
+              <span className={styles.heroOverTitle}>PREMIUM COFFEE ROASTERS</span>
             </ScrollReveal>
-            <ScrollReveal effect="left" delay={200}>
-              <p className={styles.heroSubtitle}>
-                Hạt cà phê rang xay thủ công, giữ trọn hương vị tự nhiên từ cao nguyên Lâm Đồng.
+            
+            <ScrollReveal effect="up" delay={200} duration={1.2}>
+              <h1 className={styles.heroTitleCentered}>
+                Hương Vị Tận Cùng <br />
+                <span className="text-coffee-light italic">Từ Tâm Hồn Cà Phê</span>
+              </h1>
+            </ScrollReveal>
+
+            <ScrollReveal effect="up" delay={400}>
+              <p className={styles.heroSubtitleCentered}>
+                Chúng tôi tuyển chọn những hạt cà phê ngon nhất từ các vùng nguyên liệu đặc hữu, 
+                rang xay thủ công để giữ trọn vẹn bản sắc hương vị tự nhiên nhất.
               </p>
             </ScrollReveal>
-            <ScrollReveal effect="left" delay={400}>
+
+            <ScrollReveal effect="up" delay={600}>
               <div className={styles.heroActions}>
                 <Link href="#products" className={styles.primaryBtn}>MUA NGAY</Link>
-                <Link href="/brewing-guide" className={styles.secondaryBtn}>HƯỚNG DẪN PHA</Link>
+                <Link href="/our-story" className={styles.secondaryBtn}>CÂU CHUYỆN</Link>
               </div>
             </ScrollReveal>
           </div>
-          <div className={styles.heroImage}>
-             <ScrollReveal effect="scale" delay={300}>
-                <div className={styles.imageWrapper}>
-                   <Image 
-                     src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?q=80&w=800&auto=format&fit=crop" 
-                     alt="Premium Mavia Quality" 
-                     width={500} 
-                     height={500}
-                     priority
-                     className={styles.heroImg}
-                   />
-                </div>
-             </ScrollReveal>
-          </div>
         </div>
+
+        {/* Cinematic Bottom Gradient Overlay - Adjusted to be lower */}
+        <div className="absolute -bottom-1 left-0 w-full h-24 bg-gradient-to-t from-[#fdfcf9] via-[#fdfcf9]/50 to-transparent z-[3]"></div>
       </section>
 
       {/* 3. Section: Sản phẩm của chúng tôi (Updated from 'Nổi bật') */}
@@ -87,13 +107,13 @@ export default function Home() {
               <p className={styles.sectionDesc}>Hệ thống rang Full Hot Air & Trống kép hiện đại giúp giữ trọn hương vị.</p>
             </div>
           </ScrollReveal>
-          
+
           <div className={styles.productGrid4}>
-             {mockProducts.map((product, idx) => (
-                <ScrollReveal key={product.id} effect="up" delay={idx * 100}>
-                  <ProductCard product={product} bestSeller={idx === 0} />
-                </ScrollReveal>
-             ))}
+            {products.slice(0, 4).map((product, idx) => (
+              <ScrollReveal key={product.id} effect="up" delay={idx * 100}>
+                <ProductCard product={product} bestSeller={idx === 0} />
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
@@ -103,21 +123,20 @@ export default function Home() {
         <div className={`container ${styles.storyLayout}`}>
           <div className={styles.storyText}>
             <ScrollReveal effect="left">
-              <h2>Nguồn Gốc Hạt Cà Phê</h2>
+              <h2>Nguồn GỐc Hạt Cà Phê</h2>
               <p>
-                Tại Mavia Coffee, chúng tôi chọn lọc khắt khe từ những nông trại tại Tân Hà - Lâm Hà và Cầu Đất - Đà Lạt. Nơi hạt cà phê thấm đẫm nắng gió của thiên nhiên kỳ vĩ, được chăm sóc tỉ mỉ từng giai đoạn.
-              </p>
-              <p>
-                Công nghệ rang Full Hot Air tiên tiến kết hợp cùng hệ thống trống kép giúp kiểm soát nhiệt độ hoàn hảo, mang đến những hạt cà phê chín đều từ trong ra ngoài, không bị cháy khét, giữ nguyên hương vị bản sắc.
+                Với hơn 10 năm kinh nghiệm cung cấp cà phê rang xay chất lượng,
+                Mavia Coffee là đối tác nhà cung cấp cà phê đáng tin cậy của hàng trăm khách hàng là doanh nghiệp, đại lý và cá nhân. Không chỉ sở hữu xưởng rang xay cà phê đạt tiêu chuẩn vệ sinh an toàn thực phẩm, cà phê nguyên liệu mà chúng tôi lựa chọn có nguồn gốc rõ ràng, hạt to 16, 18 không sâu bệnh, không phụ liệu và không chất bảo quản.
+                Bên cạnh đó là hệ thống máy móc rang xay cao cấp đạt chất lượng rang xay chuẩn Châu Âu.
               </p>
             </ScrollReveal>
           </div>
           <div className={styles.storyImageWrapper}>
             <ScrollReveal effect="right" delay={200}>
-              <Image 
-                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop" 
-                alt="Coffee Farm Origin" 
-                width={800} 
+              <Image
+                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop"
+                alt="Coffee Farm Origin"
+                width={800}
                 height={600}
                 className={styles.storyImg}
               />

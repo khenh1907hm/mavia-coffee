@@ -6,8 +6,23 @@ import { mockProducts } from '@/data/products';
 import { supabase } from '@/lib/supabase';
 
 export default async function ProductListing() {
-  // We prioritize mockProducts for now as per user request for GU series
-  const displayProducts = mockProducts;
+  // Fetch real products from Supabase
+  const { data: dbProducts, error } = await supabase
+    .from('products')
+    .select('*, categories(name)')
+    .order('created_at', { ascending: false });
+
+  // Map database response to match the expected Product structure
+  const displayProducts = (dbProducts && dbProducts.length > 0) 
+    ? dbProducts.map(p => ({
+        ...p,
+        category_name: p.categories?.name || p.category_name || 'Coffee'
+      }))
+    : mockProducts;
+
+  if (error) {
+    console.error('Error fetching products from Supabase:', error);
+  }
   return (
     <main>
       <Header />

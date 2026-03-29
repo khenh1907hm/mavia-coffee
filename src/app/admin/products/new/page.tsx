@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Save, Loader2 } from 'lucide-react';
+import { ChevronLeft, Save, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ProductFormPage() {
   const router = useRouter();
@@ -29,6 +30,9 @@ export default function ProductFormPage() {
     stock_quantity: 0
   });
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+
   useEffect(() => {
     fetchCategories();
     if (isEdit) fetchProduct();
@@ -52,40 +56,85 @@ export default function ProductFormPage() {
         flavor_notes: data.flavor_notes || [],
         brew_methods: data.brew_methods || []
       });
+      if (data.image_url) setImagePreview(data.image_url);
     }
     setLoading(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('mavia-image')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data } = supabase.storage
+      .from('mavia-image')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    const payload = {
-      ...formData,
-      flavor_notes: Array.isArray(formData.flavor_notes) ? formData.flavor_notes : [],
-      brew_methods: Array.isArray(formData.brew_methods) ? formData.brew_methods : []
-    };
+    try {
+      let finalImageUrl = formData.image_url;
 
-    let error;
-    if (isEdit) {
-      const { error: err } = await supabase
-        .from('products')
-        .update(payload)
-        .eq('id', params.id);
-      error = err;
-    } else {
-      const { error: err } = await supabase
-        .from('products')
-        .insert([payload]);
-      error = err;
-    }
+      if (imageFile) {
+        finalImageUrl = await uploadImage(imageFile);
+      }
 
-    if (!error) {
-      router.push('/admin/products');
-    } else {
-      alert('Có lỗi xảy ra: ' + error.message);
+      const payload = {
+        ...formData,
+        image_url: finalImageUrl,
+        flavor_notes: Array.isArray(formData.flavor_notes) ? formData.flavor_notes : [],
+        brew_methods: Array.isArray(formData.brew_methods) ? formData.brew_methods : []
+      };
+
+      let error;
+      if (isEdit) {
+        const { error: err } = await supabase
+          .from('products')
+          .update(payload)
+          .eq('id', params.id);
+        error = err;
+      } else {
+        const { error: err } = await supabase
+          .from('products')
+          .insert([payload]);
+        error = err;
+      }
+
+      if (!error) {
+        router.push('/admin/products');
+      } else {
+        alert('Có lỗi xảy ra: ' + error.message);
+      }
+    } catch (err: any) {
+      alert('Lỗi tải ảnh: ' + err.message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   if (loading) return <div className="p-10 text-center">Đang tải dữ liệu...</div>;
@@ -151,14 +200,48 @@ export default function ProductFormPage() {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">URL Hình ảnh</label>
-          <input 
-            required
-            type="text" 
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-coffee-light"
-            value={formData.image_url}
-            onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-          />
+          <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">Hình ảnh sản phẩm</label>
+          <div className="flex flex-col gap-4">
+            <div className="relative group w-full aspect-video md:w-64 md:h-64 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden flex flex-col items-center justify-center hover:border-coffee-light transition-all cursor-pointer">
+              {imagePreview ? (
+                <>
+                  <Image 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    fill 
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setImageFile(null);
+                        setImagePreview('');
+                        setFormData({...formData, image_url: ''});
+                      }}
+                      className="p-2 bg-rose-500 text-white rounded-full hover:scale-110 transition-transform"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-gray-400">
+                  <Upload size={32} />
+                  <span className="text-xs font-medium">Click để chọn ảnh hoặc kéo thả</span>
+                </div>
+              )}
+              <input 
+                type="file" 
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={handleImageChange}
+              />
+            </div>
+            {formData.image_url && !imageFile && (
+              <p className="text-[10px] text-gray-400 font-mono break-all">{formData.image_url}</p>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">

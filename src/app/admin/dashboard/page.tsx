@@ -60,15 +60,15 @@ export default function AdminDashboard() {
         <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold mb-6 text-coffee-dark uppercase tracking-wide">Thao tác nhanh</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Link 
-              href="/admin/products/new" 
+            <Link
+              href="/admin/products/new"
               className="p-4 border border-dashed border-gray-200 rounded-lg text-center hover:border-coffee-light hover:bg-coffee-cream transition-all group"
             >
               <Coffee className="mx-auto mb-2 text-gray-400 group-hover:text-coffee-dark" size={24} />
-              <span className="text-sm font-semibold text-gray-600 group-hover:text-coffee-dark">Thêm Sản phẩm</span>
+              <span className="text-sm font-semibold text-gray-600 group-hover:text-coffee-light">Thêm Sản phẩm</span>
             </Link>
-            <Link 
-              href="/admin/posts/new" 
+            <Link
+              href="/admin/posts/new"
               className="p-4 border border-dashed border-gray-200 rounded-lg text-center hover:border-coffee-light hover:bg-coffee-cream transition-all group"
             >
               <FileText className="mx-auto mb-2 text-gray-400 group-hover:text-coffee-dark" size={24} />
@@ -77,14 +77,14 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-coffee-dark text-white p-8 rounded-xl shadow-sm flex flex-col justify-center relative overflow-hidden">
+        <div className="bg-white text-coffee-dark p-8 rounded-xl shadow-sm flex flex-col justify-center relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-2xl font-serif font-bold mb-4">Mavia Coffee Roastery</h2>
+            <h2 className="text-2xl text-coffee-dark font-serif font-bold mb-4">Mavia Coffee Roastery</h2>
             <p className="text-gray-400 mb-6">
               Mỗi hạt cà phê là một câu chuyện. Hãy quản lý nội dung của bạn thật tốt để truyền tải giá trị đó đến khách hàng.
             </p>
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-block bg-white text-coffee-dark px-6 py-2 rounded-lg font-bold hover:bg-coffee-light transition-all"
             >
               Xem Website

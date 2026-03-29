@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Playfair_Display, Inter } from 'next/font/google';
 import './globals.css';
 import FloatingContactWrapper from '@/components/FloatingContact/FloatingContactWrapper';
+import BackToTop from '@/components/BackToTop';
+import { CartProvider } from '@/context/CartContext';
 
 const fontSerif = Playfair_Display({
   subsets: ['latin'],
@@ -28,8 +30,11 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={`${fontSans.variable} ${fontSerif.variable} antialiased`}>
-        {children}
-        <FloatingContactWrapper />
+        <CartProvider>
+          {children}
+          <FloatingContactWrapper />
+          <BackToTop />
+        </CartProvider>
       </body>
     </html>
   );

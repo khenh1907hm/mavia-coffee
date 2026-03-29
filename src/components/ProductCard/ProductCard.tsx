@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ProductCard.module.css';
+import { useCart } from '@/context/CartContext';
 
 interface variant {
   weight: string;
@@ -42,9 +43,25 @@ const ProductCard = ({ product, bestSeller }: ProductProps) => {
   const [quantity, setQuantity] = useState(1);
 
   const currentVariant = variants.find(v => v.weight === selectedWeight) || variants[0];
+  const { addToCart } = useCart();
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(prev => Math.max(1, prev + delta));
+  };
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: currentVariant.price,
+      weight: selectedWeight,
+      quantity: quantity,
+      image_url: product.image_url,
+      slug: product.slug
+    });
+    
+    // Simple alert for feedback (can be improved later with toast)
+    alert(`Đã thêm ${quantity} sản phẩm ${product.name} vào giỏ hàng!`);
   };
 
   return (
@@ -118,7 +135,7 @@ const ProductCard = ({ product, bestSeller }: ProductProps) => {
               </span>
             )}
           </div>
-          <button className={styles.addToCartBtn}>THÊM GIỎ HÀNG</button>
+          <button className={styles.addToCartBtn} onClick={handleAddToCart}>THÊM GIỎ HÀNG</button>
         </div>
       </div>
     </div>
