@@ -37,6 +37,8 @@ const mockBlogs = [
   }
 ];
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Fetch real products from Supabase
   const { data: dbProducts, error } = await supabase

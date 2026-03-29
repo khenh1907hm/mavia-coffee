@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import BlogSidebar from '@/components/Blog/BlogSidebar';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PostDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { data: post, error } = await supabase

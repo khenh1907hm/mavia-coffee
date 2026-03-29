@@ -5,6 +5,8 @@ import styles from './Listing.module.css';
 import { mockProducts } from '@/data/products';
 import { supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductListing() {
   // Fetch real products from Supabase
   const { data: dbProducts, error } = await supabase
