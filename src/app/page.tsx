@@ -65,7 +65,17 @@ export default async function Home() {
 
       {/* 2. Hero Section - Redesigned Centered Premium Version */}
       <section className={styles.hero}>
-        <div className={styles.heroBackground}></div>
+        <div className={styles.heroBackground}>
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className={styles.heroVideo}
+          >
+            <source src="/mavia_cf.mp4" type="video/mp4" />
+          </video>
+        </div>
         <div className={`container ${styles.heroContainerCentered}`}>
           <div className={styles.heroContentCentered}>
             <ScrollReveal effect="fade" duration={1.5}>
@@ -95,8 +105,6 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Cinematic Bottom Gradient Overlay - Adjusted to be lower */}
-        <div className="absolute -bottom-1 left-0 w-full h-24 bg-gradient-to-t from-[#fdfcf9] via-[#fdfcf9]/50 to-transparent z-[3]"></div>
       </section>
 
       {/* 3. Section: Sản phẩm của chúng tôi (Updated from 'Nổi bật') */}
