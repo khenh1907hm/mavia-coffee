@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Menu, X, Phone, Mail, MapPin } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import GoogleLoginButton from '@/components/Auth/GoogleLoginButton';
 
 const Header = () => {
   const { cartCount } = useCart();
@@ -80,6 +81,8 @@ const Header = () => {
                   </span>
                 )}
               </Link>
+
+              <GoogleLoginButton />
 
               {/* Mobile Menu Toggle Button */}
               <button 

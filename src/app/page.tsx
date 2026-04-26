@@ -8,6 +8,9 @@ import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal';
 import { mockProducts } from '@/data/products';
 import { supabase } from '@/lib/supabase';
+import HeroSection from '@/components/Hero/HeroSection';
+import Testimonials from '@/components/Testimonials/Testimonials';
+import Journey from '@/components/Journey/Journey';
 
 
 const mockBlogs = [
@@ -48,11 +51,11 @@ export default async function Home() {
 
   // Map database response to match the expected Product structure
   // Fallback to mockProducts if DB is empty or has issues
-  const products = (dbProducts && dbProducts.length > 0) 
+  const products = (dbProducts && dbProducts.length > 0)
     ? dbProducts.map(p => ({
-        ...p,
-        category_name: p.categories?.name || p.category_name || 'Coffee'
-      }))
+      ...p,
+      category_name: p.categories?.name || p.category_name || 'Coffee'
+    }))
     : mockProducts;
 
   if (error) {
@@ -63,49 +66,7 @@ export default async function Home() {
     <main className={styles.main}>
       <Header />
 
-      {/* 2. Hero Section - Redesigned Centered Premium Version */}
-      <section className={styles.hero}>
-        <div className={styles.heroBackground}>
-          <video 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className={styles.heroVideo}
-          >
-            <source src="/mavia_cf.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <div className={`container ${styles.heroContainerCentered}`}>
-          <div className={styles.heroContentCentered}>
-            <ScrollReveal effect="fade" duration={1.5}>
-              <span className={styles.heroOverTitle}>PREMIUM COFFEE ROASTERS</span>
-            </ScrollReveal>
-            
-            <ScrollReveal effect="up" delay={200} duration={1.2}>
-              <h1 className={styles.heroTitleCentered}>
-                Hương Vị Tận Cùng <br />
-                <span className="text-coffee-light italic">Từ Tâm Hồn Cà Phê</span>
-              </h1>
-            </ScrollReveal>
-
-            <ScrollReveal effect="up" delay={400}>
-              <p className={styles.heroSubtitleCentered}>
-                Chúng tôi tuyển chọn những hạt cà phê ngon nhất từ các vùng nguyên liệu đặc hữu, 
-                rang xay thủ công để giữ trọn vẹn bản sắc hương vị tự nhiên nhất.
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal effect="up" delay={600}>
-              <div className={styles.heroActions}>
-                <Link href="#products" className={styles.primaryBtn}>MUA NGAY</Link>
-                <Link href="/our-story" className={styles.secondaryBtn}>CÂU CHUYỆN</Link>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-
-      </section>
+      <HeroSection />
 
       {/* 3. Section: Sản phẩm của chúng tôi (Updated from 'Nổi bật') */}
       <section id="products" className="section">
@@ -128,38 +89,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 4. Section: Câu chuyện thương hiệu */}
-      <section className={styles.brandStory}>
-        <div className={`container ${styles.storyLayout}`}>
-          <div className={styles.storyText}>
-            <ScrollReveal effect="left">
-              <h2>Nguồn GỐc Hạt Cà Phê</h2>
-              <p>
-                Với hơn 10 năm kinh nghiệm cung cấp cà phê rang xay chất lượng,
-                Mavia Coffee là đối tác nhà cung cấp cà phê đáng tin cậy của hàng trăm khách hàng là doanh nghiệp, đại lý và cá nhân. Không chỉ sở hữu xưởng rang xay cà phê đạt tiêu chuẩn vệ sinh an toàn thực phẩm, cà phê nguyên liệu mà chúng tôi lựa chọn có nguồn gốc rõ ràng, hạt to 16, 18 không sâu bệnh, không phụ liệu và không chất bảo quản.
-                Bên cạnh đó là hệ thống máy móc rang xay cao cấp đạt chất lượng rang xay chuẩn Châu Âu.
-              </p>
-            </ScrollReveal>
-          </div>
-          <div className={styles.storyImageWrapper}>
-            <ScrollReveal effect="right" delay={200}>
-              <Image
-                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop"
-                alt="Coffee Farm Origin"
-                width={800}
-                height={600}
-                className={styles.storyImg}
-              />
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
+      {/* 4. Section: Hành trình của hạt (Replaced Brand Story) */}
+      <Journey />
 
       {/* 5. Section: Blog */}
       <section className="section bg-gray-50/50">
         <div className="container">
           <ScrollReveal effect="up">
             <div className={styles.sectionHeader}>
+              <span className={styles.subTitle}>Blog</span>
               <h2>Bài Viết Gần Đây</h2>
             </div>
           </ScrollReveal>
@@ -172,6 +110,74 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* 6. Section: Gallery (Sliding) */}
+      <section className={styles.gallerySection}>
+        <div className="container">
+          <ScrollReveal effect="up">
+            <div className={styles.sectionHeader}>
+              <span className={styles.subTitle}>Premium Blends</span>
+              <h2>Không Gian Mavia</h2>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        <div className={styles.sliderContainer}>
+          <div className={styles.sliderTrack}>
+            {[
+              'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop'
+            ].map((img, idx) => (
+              <div key={idx} className={styles.sliderItem}>
+                <Image src={img} alt={`Gallery ${idx}`} width={400} height={300} className={styles.galleryImg} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Section: Partners (Staggered) */}
+      <section className="section overflow-hidden">
+        <div className="container">
+          <ScrollReveal effect="up">
+            <div className={styles.sectionHeader}>
+              <span className={styles.subTitle}>Partnership</span>
+              <h2>Đối Tác Đồng Hành</h2>
+            </div>
+          </ScrollReveal>
+
+          <div className={styles.partnersGrid}>
+            {[
+              { name: 'Olam Coffee', logo: '/images/partner/Olam.jpg' },
+              { name: 'Simexco', logo: '/images/partner/Simexco.jpg' },
+              { name: 'Brewico', logo: '/images/partner/brewico.png' },
+              { name: 'Intimex', logo: '/images/partner/intimex.png' },
+              { name: 'Kien Nam Group', logo: '/images/partner/logo_kien_nam_group.png' },
+              { name: 'Long Beach', logo: '/images/partner/longbeach.png' },
+              { name: 'Vinafin', logo: '/images/partner/vinafin.png' }
+            ].map((p, idx) => (
+              <ScrollReveal key={idx} effect="up" delay={idx * 100}>
+                <div className={`${styles.partnerItem} ${idx % 2 === 0 ? styles.staggerUp : styles.staggerDown}`}>
+                  <div className={styles.partnerLogoWrapper}>
+                    <img src={p.logo} alt={p.name} className={styles.partnerLogo} />
+                  </div>
+                  <span className={styles.partnerName}>{p.name}</span>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Testimonials />
 
       <Footer />
     </main>

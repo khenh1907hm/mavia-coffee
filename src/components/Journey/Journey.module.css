@@ -1,0 +1,158 @@
+.section {
+  padding: 120px 0;
+  background: white;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.subTitle {
+  display: block;
+  text-transform: uppercase;
+  color: var(--coffee-light);
+  letter-spacing: 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.sectionHeader h2 {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--coffee-dark);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.sectionDesc {
+  color: #777;
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+}
+
+.journeyGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+}
+
+.itemContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+
+.reverse {
+  direction: rtl;
+}
+
+.reverse .textContent {
+  direction: ltr;
+  text-align: left;
+}
+
+.imageWrapper {
+  position: relative;
+}
+
+.imageInner {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 4 / 3;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+}
+
+.itemContent:hover .image {
+  transform: scale(1.05);
+}
+
+.stepNumber {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1;
+  font-family: var(--font-serif);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.reverse .stepNumber {
+  right: auto;
+  left: 40px;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.stepTitle {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--coffee-dark);
+}
+
+.stepDesc {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.decorLine {
+  width: 60px;
+  height: 4px;
+  background: var(--coffee-light);
+  border-radius: 2px;
+}
+
+@media (max-width: 991px) {
+  .itemContent {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .reverse {
+    direction: ltr;
+  }
+  
+  .reverse .textContent {
+    text-align: center;
+  }
+  
+  .textContent {
+    align-items: center;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 2.5rem;
+  }
+  
+  .journeyGrid {
+    gap: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sectionHeader h2 {
+    font-size: 2rem;
+  }
+}

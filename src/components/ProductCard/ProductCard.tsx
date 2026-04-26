@@ -17,6 +17,7 @@ interface ProductProps {
     name: string;
     slug: string;
     image_url: string;
+    hover_image_url?: string;
     category_name: string;
     description?: string;
     price?: number;
@@ -67,13 +68,26 @@ const ProductCard = ({ product, bestSeller }: ProductProps) => {
   return (
     <div className={styles.card}>
       <Link href={`/products/${product.slug}`} className={styles.imageWrapper}>
+        {/* Main Image */}
         <Image
           src={product.image_url || '/placeholder-coffee.jpg'}
           alt={product.name}
           width={400}
           height={400}
-          className={styles.image}
+          className={`${styles.image} ${product.hover_image_url ? styles.hasHover : ''}`}
         />
+        
+        {/* Hover Image (Information Image) */}
+        {product.hover_image_url && (
+          <Image
+            src={product.hover_image_url}
+            alt={`${product.name} Info`}
+            width={400}
+            height={400}
+            className={styles.hoverImage}
+          />
+        )}
+        
         {bestSeller && <div className={styles.bestSellerBadge}>Hot Deal</div>}
       </Link>
 
@@ -83,9 +97,6 @@ const ProductCard = ({ product, bestSeller }: ProductProps) => {
           <Link href={`/products/${product.slug}`}>{product.name}</Link>
         </h3>
 
-        {product.description && (
-          <p className={styles.description}>{product.description}</p>
-        )}
 
         {/* {product.specs && (
           <div className={styles.specsGrid}>

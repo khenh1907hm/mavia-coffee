@@ -24,6 +24,18 @@ const nextConfig: NextConfig = {
         hostname: 'fapwsqtxcrydiamyzxgt.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.vietqr.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
       }
     ],
   },

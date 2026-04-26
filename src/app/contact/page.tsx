@@ -6,6 +6,7 @@ import Footer from '@/components/Footer/Footer';
 import { supabase } from '@/lib/supabase';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
+import { sendZaloContactNotification } from '@/utils/notifications';
 
 export default function ContactPage() {
   const [loading, setLoading] = useState(false);
@@ -28,6 +29,10 @@ export default function ContactPage() {
         .insert([formData]);
 
       if (error) throw error;
+      
+      // Send Zalo Notification
+      await sendZaloContactNotification(formData);
+      
       setSubmitted(true);
     } catch (error: any) {
       alert('Có lỗi xảy ra: ' + error.message);

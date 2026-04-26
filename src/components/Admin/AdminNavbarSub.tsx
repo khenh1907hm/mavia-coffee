@@ -13,10 +13,6 @@ export default function AdminNavbarSub() {
     { name: 'Articles', icon: <FileText size={18} />, href: '/admin/posts' },
     { name: 'Orders', icon: <Package size={18} />, href: '/admin/orders' },
     { name: 'Messages', icon: <Mail size={18} />, href: '/admin/messages' },
-    { name: 'Advanced UI', icon: <Layers size={18} />, href: '/admin/ui' },
-    { name: 'User Interface', icon: <Palette size={18} />, href: '/admin/interface' },
-    { name: 'Components', icon: <Grid size={18} />, href: '/admin/components' },
-    { name: 'Settings', icon: <Settings size={18} />, href: '/admin/settings' },
   ];
 
   return (
@@ -25,14 +21,13 @@ export default function AdminNavbarSub() {
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <Link 
-              key={item.href} 
+            <Link
+              key={item.href}
               href={item.href}
-              className={`flex items-center h-full gap-3 px-6 text-sm font-semibold transition-all border-b-2 ${
-                isActive 
-                  ? 'text-coffee-dark border-coffee-dark bg-gray-50' 
+              className={`flex items-center h-full gap-3 px-6 text-sm font-semibold transition-all border-b-2 ${isActive
+                  ? 'text-coffee-dark border-coffee-dark bg-gray-50'
                   : 'text-gray-500 border-transparent hover:text-coffee-dark hover:bg-gray-50/50'
-              }`}
+                }`}
             >
               {item.icon}
               <span>{item.name}</span>

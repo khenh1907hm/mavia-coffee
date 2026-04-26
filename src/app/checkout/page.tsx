@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { supabase } from '@/lib/supabase';
 import { CheckCircle2, CreditCard, Truck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { sendZaloOrderNotification } from '@/utils/notifications';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -22,6 +23,22 @@ export default function CheckoutPage() {
     email: '',
     note: ''
   });
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        setFormData(prev => ({
+          ...prev,
+          name: user.user_metadata.full_name || prev.name,
+          email: user.email || prev.email
+        }));
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -46,7 +63,8 @@ export default function CheckoutPage() {
           note: formData.note,
           payment_method: paymentMethod,
           total_amount: cartTotal,
-          status: 'pending'
+          status: 'pending',
+          user_id: user?.id || null
         })
         .select()
         .single();
@@ -67,6 +85,9 @@ export default function CheckoutPage() {
         .insert(orderItems);
 
       if (itemsError) throw itemsError;
+
+      // 3. Send Zalo Notification
+      await sendZaloOrderNotification(order, orderItems);
 
       setOrderId(order.id);
       clearCart();

@@ -1,9 +1,9 @@
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
-import Image from 'next/image';
 import styles from './Detail.module.css';
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
+import ProductDetailClient from '@/components/Product/ProductDetailClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,82 +20,27 @@ export default async function ProductDetail({ params }: { params: Promise<{ slug
     return notFound();
   }
 
-  // Safe mapping for categories and arrays
-  const categoryName = product.categories?.name || 'Uncategorized';
-  const flavorNotes = Array.isArray(product.flavor_notes) ? product.flavor_notes : [];
-  const brewMethods = Array.isArray(product.brew_methods) ? product.brew_methods : [];
-
   return (
-    <main>
+    <main className="bg-[#fcfcfc] min-h-screen">
       <Header />
       
-      <section className={`section ${styles.detailSection}`}>
+      <section className={`section pt-40 pb-20 ${styles.detailSection}`}>
         <div className="container">
-          <div className={styles.layout}>
-            <div className={styles.imageGallery}>
-              <div className={styles.mainImage}>
-                <Image 
-                  src={product.image_url} 
-                  alt={product.name} 
-                  width={600} 
-                  height={600} 
-                  priority
-                  className="object-cover rounded-2xl"
-                />
-              </div>
-            </div>
-            
-            <div className={styles.info}>
-              <span className={styles.category}>{categoryName}</span>
-              <h1 className={styles.title}>{product.name}</h1>
-              <p className={styles.price}>
-                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-              </p>
-              
-              <div className={styles.description}>
-                <p>{product.description}</p>
-              </div>
-              
-              <div className={styles.specs}>
-                <div className={styles.specItem}>
-                  <span className={styles.specLabel}>Mức độ rang:</span>
-                  <span className={styles.specValue}>{product.roast_level}</span>
-                </div>
-                
-                <div className={styles.specItem}>
-                  <span className={styles.specLabel}>Hương vị:</span>
-                  <div className={styles.tags}>
-                    {flavorNotes.map((note: string, idx: number) => (
-                      <span key={idx} className={styles.tag}>{note}</span>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className={styles.specItem}>
-                  <span className={styles.specLabel}>Phương pháp pha:</span>
-                  <span className={styles.specValue}>{brewMethods.join(', ')}</span>
-                </div>
-              </div>
-              
-              <div className={styles.actions}>
-                <div className={styles.quantity}>
-                  <button className="px-3">-</button>
-                  <input type="number" defaultValue={1} readOnly className="w-12 text-center bg-transparent" />
-                  <button className="px-3">+</button>
-                </div>
-                <button className={styles.cartBtn}>THÊM VÀO GIỎ HÀNG</button>
-              </div>
-            </div>
-          </div>
+          <ProductDetailClient product={product} />
         </div>
 
         {product.story && (
-          <div className="mt-20 py-16 border-t border-gray-100 bg-coffee-cream/20">
-            <div className="max-w-3xl mx-auto px-6 text-center">
-              <h2 className="font-serif text-3xl text-coffee-dark mb-8 uppercase tracking-widest">
+          <div className="mt-32 py-24 bg-white border-y border-gray-100">
+            <div className="max-w-4xl mx-auto px-6 text-center">
+              <div className="flex justify-center mb-10">
+                <div className="w-16 h-[1px] bg-coffee-light/40"></div>
+                <div className="mx-4 w-2 h-2 rounded-full bg-coffee-light"></div>
+                <div className="w-16 h-[1px] bg-coffee-light/40"></div>
+              </div>
+              <h2 className="font-serif text-4xl text-coffee-dark mb-10 uppercase tracking-[0.2em] font-black">
                 Câu Chuyện Phía Sau
               </h2>
-              <p className="prose prose-coffee max-w-none text-gray-700 leading-relaxed text-lg italic whitespace-pre-line">
+              <p className="prose prose-coffee max-w-none text-gray-600 leading-[2] text-lg font-medium italic whitespace-pre-line">
                 "{product.story}"
               </p>
             </div>

@@ -240,29 +240,152 @@
   gap: 30px;
 }
 
-@media (max-width: 1024px) {
+/* Gallery Slider */
+.gallerySection {
+  padding: 100px 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.sectionHeaderCentered {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.sliderContainer {
+  width: 100%;
+  position: relative;
+}
+
+.sliderTrack {
+  display: flex;
+  width: calc(400px * 20);
+  animation: slide 40s linear infinite;
+  gap: 20px;
+}
+
+.sliderTrack:hover {
+  animation-play-state: paused;
+}
+
+.sliderItem {
+  flex-shrink: 0;
+  width: 400px;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.galleryImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.sliderItem:hover .galleryImg {
+  transform: scale(1.1);
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-400px * 10 - 200px)); }
+}
+
+/* Partners Staggered */
+.partnersGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+  padding: 40px 0;
+}
+
+.partnerItem {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.4s ease;
+}
+
+.staggerUp {
+  transform: translateY(-20px);
+}
+
+.staggerDown {
+  transform: translateY(20px);
+}
+
+.partnerLogoWrapper {
+  width: 140px;
+  height: 140px;
+  padding: 30px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.partnerLogo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: grayscale(0);
+  opacity: 1;
+  transition: all 0.3s ease;
+  mix-blend-mode: multiply; /* Blends gray image backgrounds with white parent */
+}
+
+.partnerItem:hover .partnerLogoWrapper {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(191, 155, 123, 0.15);
+}
+
+.partnerItem:hover .partnerLogo {
+  filter: brightness(1.1) contrast(1.1);
+  transform: scale(1.05); /* Added slight scale for a "pop" effect */
+}
+
+.partnerName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--coffee-dark);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.partnerItem:hover .partnerName {
+  opacity: 1;
+  color: var(--coffee-light);
+}
+
+
+@media (max-width: 1200px) {
   .productGrid4 {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 }
 
 @media (max-width: 992px) {
-  .heroContainer {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .productGrid4 {
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .heroActions {
-    justify-content: center;
+  
+  .sectionHeader h2 {
+    font-size: 2.2rem;
   }
-
-  .heroTitle {
-    font-size: 48px;
-  }
-
-  .heroImage {
-    display: none;
-    /* Hide image on mobile/tablet to save space and focus on action */
+  
+  .brandStory {
+    padding: 60px 0;
   }
 
   .storyLayout {
@@ -272,6 +395,7 @@
 
   .storyText {
     order: 2;
+    text-align: center;
   }
 
   .storyImageWrapper {
@@ -280,22 +404,56 @@
 }
 
 @media (max-width: 768px) {
-
+  .productGrid4,
   .productGrid3,
   .blogGrid {
     grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 1.8rem;
   }
 
-  .heroTitle {
-    font-size: 36px;
+  .partnersGrid {
+    gap: 20px;
+    padding: 20px 0;
   }
 
-  .heroSubtitle {
-    font-size: 1.1rem;
-    max-width: 100%;
+  .partnerItem {
+    flex: 0 0 calc(50% - 10px); /* 2 items per row */
   }
 
-  .heroActions {
-    flex-direction: column;
+  .partnerLogoWrapper {
+    width: 90px;
+    height: 90px;
+    padding: 15px;
+  }
+  
+  .staggerUp, .staggerDown {
+    transform: none; /* Align on mobile */
+  }
+
+  .heroTitleCentered {
+    font-size: 32px;
+  }
+
+  .heroSubtitleCentered {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .sectionHeader {
+    margin-bottom: 40px;
+  }
+  
+  .productGrid4 {
+    gap: 20px;
   }
 }
