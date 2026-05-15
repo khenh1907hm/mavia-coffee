@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import { supabase } from '@/lib/supabase';
-import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2, MessageSquare, FileText } from 'lucide-react';
 import Image from 'next/image';
 import { sendZaloContactNotification } from '@/utils/notifications';
 
@@ -43,13 +43,13 @@ export default function ContactPage() {
 
   return (
     <main className="bg-[#fdfcf9] min-h-screen font-inter">
-      <Header />
+      <Header isTransparent={true} />
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 bg-coffee-dark overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/coffee-beans.png')]"></div>
         <div className="container relative z-10 text-center text-white">
-          <h1 className="text-5xl md:text-6xl font-black mb-6 uppercase tracking-widest font-serif italic">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 uppercase tracking-widest font-serif italic !text-white">
             Liên hệ Mavia
           </h1>
           <p className="text-lg text-coffee-cream/70 max-w-2xl mx-auto font-medium">
@@ -71,32 +71,43 @@ export default function ContactPage() {
                 </h2>
                 <div className="space-y-8">
                   <div className="flex gap-6 items-start group">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500 flex-shrink-0">
+                      <FileText size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Công ty TNHH KỲ KHANG AN</h4>
+                      <p className="text-gray-600 leading-relaxed font-medium text-sm">MST: 5801519981<br />GPKD số 5801519981 cấp ngày 18/06/2024 tại Sở KH&ĐT tỉnh Lâm Đồng</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-6 items-start group">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500 flex-shrink-0">
                       <MapPin size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Địa chỉ rang xay</h4>
-                      <p className="text-gray-600 leading-relaxed font-medium">123 Đường Cà Phê, Quận 1, TP. Hồ Chí Minh</p>
+                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Địa chỉ</h4>
+                      <p className="text-gray-600 leading-relaxed font-medium text-sm">53 Quảng Đức, TT. Đinh Văn, Lâm Hà<br />Số 200, QL20, Tổ 21, Đức Trọng, Lâm Đồng</p>
                     </div>
                   </div>
 
                   <div className="flex gap-6 items-start group">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500 flex-shrink-0">
                       <Phone size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Hotline hỗ trợ</h4>
-                      <p className="text-gray-600 leading-relaxed font-bold text-lg">+84 123 456 789</p>
+                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Hotline 24/7</h4>
+                      <p className="text-gray-600 leading-relaxed font-bold text-lg">091.900.2403</p>
+                      <p className="text-gray-600 text-sm mt-1 font-medium">Sáng: 8h00 – 11h00<br />Chiều: 13h00 – 20h00</p>
                     </div>
                   </div>
 
                   <div className="flex gap-6 items-start group">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-coffee-cream flex items-center justify-center text-coffee-light group-hover:bg-coffee-dark group-hover:text-white transition-all duration-500 flex-shrink-0">
                       <Mail size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Email phản hồi</h4>
-                      <p className="text-gray-600 leading-relaxed font-medium">hello@maviacoffee.vn</p>
+                      <h4 className="font-bold text-coffee-dark uppercase tracking-widest text-xs mb-2">Email</h4>
+                      <p className="text-gray-600 leading-relaxed font-medium">mavia.coffee@gmail.com</p>
                     </div>
                   </div>
                 </div>

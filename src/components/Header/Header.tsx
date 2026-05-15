@@ -6,10 +6,19 @@ import { ShoppingBag, Menu, X, Phone, Mail, MapPin } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import GoogleLoginButton from '@/components/Auth/GoogleLoginButton';
 
-const Header = () => {
+const Header = ({ isTransparent = false }: { isTransparent?: boolean }) => {
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (cartCount > 0) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [cartCount]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +53,7 @@ const Header = () => {
     <>
       <header 
         className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-300 border-b ${
-          isScrolled 
+          isScrolled || !isTransparent
             ? 'bg-white/90 backdrop-blur-xl border-coffee-dark/5 py-3 shadow-lg' 
             : 'bg-white/30 backdrop-blur-md border-white/10 py-5'
         }`}
@@ -53,7 +62,9 @@ const Header = () => {
           <div className="flex items-center justify-between">
 
             <div className="flex items-center gap-2 group">
-              <Link href="/" className="font-serif text-2xl font-black text-coffee-dark tracking-tighter transition-all group-hover:tracking-normal">
+              <Link href="/" className={`font-serif text-2xl font-black tracking-tighter transition-all group-hover:tracking-normal ${
+                isScrolled || !isTransparent ? 'text-coffee-dark' : '!text-white'
+              }`}>
                 MAVIA COFFEE
               </Link>
             </div>
@@ -64,7 +75,9 @@ const Header = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[11px] font-black uppercase tracking-[0.2em] text-coffee-dark/60 hover:text-coffee-dark transition-all relative group"
+                  className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all relative group ${
+                    isScrolled || !isTransparent ? 'text-coffee-dark/60 hover:text-coffee-dark' : '!text-white/70 hover:!text-white'
+                  }`}
                 >
                   {link.name}
                   <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-coffee-light transition-all duration-300 group-hover:w-full"></span>
@@ -73,10 +86,12 @@ const Header = () => {
             </nav>
 
             <div className="flex items-center gap-4 md:gap-6">
-              <Link href="/cart" className="relative group p-2 text-coffee-dark hover:scale-110 transition-all">
-                <ShoppingBag size={22} />
+              <Link href="/cart" className={`relative group p-2 hover:scale-110 transition-all ${
+                isScrolled || !isTransparent ? 'text-coffee-dark' : '!text-white'
+              }`}>
+                <ShoppingBag size={22} className={isAnimating ? 'animate-bounce' : ''} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-coffee-light text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-coffee-light/40 animate-in zoom-in duration-300">
+                  <span className={`absolute -top-1 -right-1 w-5 h-5 bg-coffee-light text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-coffee-light/40 transition-all ${isAnimating ? 'scale-125' : 'scale-100'}`}>
                     {cartCount}
                   </span>
                 )}
@@ -86,7 +101,9 @@ const Header = () => {
 
               {/* Mobile Menu Toggle Button */}
               <button 
-                className="md:hidden p-2 text-coffee-dark hover:scale-110 transition-all"
+                className={`md:hidden p-2 hover:scale-110 transition-all ${
+                  isScrolled || !isTransparent ? 'text-coffee-dark' : '!text-white'
+                }`}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Toggle Menu"
               >

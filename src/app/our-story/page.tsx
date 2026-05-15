@@ -6,7 +6,7 @@ import styles from './Story.module.css';
 export default function OurStory() {
   return (
     <main>
-      <Header />
+      <Header isTransparent={true} />
       
       <div className={styles.hero}>
         <div className="container">

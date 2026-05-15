@@ -1,19 +1,20 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './HeroSection.module.css';
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 
 const HeroSection = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const categories = {
     pour: {
       title: 'Hương Vị Thủ Công (Pour Over)',
       description: 'Lọc lẩy khéo léo để đánh thức những nốt hương trái cây và hoa cỏ thanh khiết nhất. Mỗi dòng chảy là một bản giao hưởng của sự kiên nhẫn.',
-      href: '#products',
+      href: '/products/pour-over',
       image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800&auto=format&fit=crop',
       label: 'POUR OVER',
       icon: '💧'
@@ -21,7 +22,7 @@ const HeroSection = () => {
     may: {
       title: 'Espresso Hiện Đại (Pha Máy)',
       description: 'Dòng chảy đậm đặc với lớp Crema vàng óng được chiết xuất dưới áp suất hoàn hảo. Đánh thức năng lượng bùng nổ trong từng giọt cà phê.',
-      href: '#products',
+      href: '/products/pha-may',
       image: 'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?q=80&w=800&auto=format&fit=crop',
       label: 'PHA MÁY ESPRESSO',
       icon: '⚡'
@@ -29,7 +30,7 @@ const HeroSection = () => {
     phin: {
       title: 'Bản Sắc Việt (Pha Phin)',
       description: 'Sự giao thoa giữa thời gian và sự kiên nhẫn. Giọt cà phê chậm rãi, đậm đà - linh hồn thực sự của di sản văn hóa cà phê Việt Nam.',
-      href: '#products',
+      href: '/products/pha-phin',
       image: 'https://images.unsplash.com/photo-1544145945-f904253db0ad?q=80&w=800&auto=format&fit=crop',
       label: 'PHIN TRUYỀN THỐNG',
       icon: '☕'
@@ -38,35 +39,49 @@ const HeroSection = () => {
 
   const categoryKeys = Object.keys(categories);
 
+  // Check if mobile for behavioral differences
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleNextCategory = useCallback(() => {
     setActiveCategory((prev) => {
-      if (!prev) return categoryKeys[0];
-      const currentIndex = categoryKeys.indexOf(prev);
+      const current = prev || categoryKeys[categoryKeys.length - 1];
+      const currentIndex = categoryKeys.indexOf(current);
       const nextIndex = (currentIndex + 1) % categoryKeys.length;
       return categoryKeys[nextIndex];
     });
   }, [categoryKeys]);
 
-  // Auto-play Logic
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isAutoPlaying && !activeCategory) {
-      // Start auto-play only when nothing is selected to avoid flickering during manual view
-      // But user said "tự động chạy hoặc người dùng ấn", so let's make it always cycle if not paused
-    }
-    
-    if (isAutoPlaying) {
-      interval = setInterval(() => {
-        handleNextCategory();
-      }, 4000); // Cycle every 4 seconds
-    }
+  const startAutoPlay = useCallback(() => {
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    autoPlayRef.current = setInterval(() => {
+      handleNextCategory();
+    }, 5000); // 5 seconds per slide
+  }, [handleNextCategory]);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, handleNextCategory]);
+  // Auto-play control
+  useEffect(() => {
+    if (isMobile) {
+      if (!activeCategory) setActiveCategory(categoryKeys[0]);
+      startAutoPlay();
+    } else {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+      autoPlayRef.current = null;
+    }
+    return () => {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    };
+  }, [isMobile, startAutoPlay, activeCategory, categoryKeys]);
 
   const handleCategoryClick = (key: string) => {
-    setIsAutoPlaying(false); // Stop auto-play on manual interaction
-    setActiveCategory(key === activeCategory ? null : key);
+    setActiveCategory(key);
+    if (isMobile) {
+      startAutoPlay(); // Restart timer on click so it doesn't jump immediately
+    }
   };
 
   return (
@@ -76,11 +91,19 @@ const HeroSection = () => {
         <video autoPlay muted loop playsInline className={styles.heroVideo}>
           <source src="/mavia_cf.mp4" type="video/mp4" />
         </video>
+        {/* Mobile Background Images */}
+        {categoryKeys.map((key) => (
+          <div 
+            key={key}
+            className={`${styles.mobileBgImage} ${activeCategory === key ? styles.mobileBgImageActive : ''}`}
+            style={{ backgroundImage: `url(${categories[key as keyof typeof categories].image})` }}
+          />
+        ))}
         <div className={styles.overlay}></div>
       </div>
 
-      {/* Main Hero Content */}
-      <div className={`${styles.container} ${activeCategory ? styles.contentHidden : ''}`}>
+      {/* Main Hero Content (Only shown on Desktop or when no category active) */}
+      <div className={`${styles.container} ${activeCategory && isMobile ? styles.contentHidden : ''}`}>
         <ScrollReveal effect="fade" duration={1.5}>
           <span className={styles.overTitle}>ESTABLISHED 2024 • PREMIUM ROASTERS</span>
         </ScrollReveal>
@@ -108,8 +131,8 @@ const HeroSection = () => {
             <div 
               key={key}
               className={styles.tabItem}
-              onMouseEnter={() => { setActiveCategory(key); setIsAutoPlaying(false); }}
-              onMouseLeave={() => { setActiveCategory(null); setIsAutoPlaying(true); }}
+              onMouseEnter={() => setActiveCategory(key)}
+              onMouseLeave={() => setActiveCategory(null)}
             >
               <div className={styles.tabIndicator}>
                 <span className={styles.tabIcon}>{cat.icon}</span>
@@ -134,7 +157,7 @@ const HeroSection = () => {
         })}
       </div>
 
-      {/* [MOBILE ONLY] Category Navigation Strip - Now at Top */}
+      {/* [MOBILE ONLY] Category Navigation Strip - Always Visible at Top */}
       <div className={styles.categoryBar}>
         {categoryKeys.map((key) => {
           const cat = categories[key as keyof typeof categories];
@@ -146,26 +169,19 @@ const HeroSection = () => {
             >
               <span className={styles.catIcon}>{cat.icon}</span>
               <span className={styles.catName}>{cat.label}</span>
-              {/* Progress bar for auto-play visual */}
-              {activeCategory === key && isAutoPlaying && (
-                 <div className={styles.progressBar}></div>
+              {/* Visible Progress Bar on active item */}
+              {activeCategory === key && isMobile && (
+                 <div className={styles.progressBar} key={activeCategory}></div>
               )}
             </div>
           );
         })}
       </div>
 
-      {/* [MOBILE ONLY] Interactive Detail Overlay */}
-      <div className={`${styles.detailOverlay} ${activeCategory ? styles.detailOverlayActive : ''}`}>
-        {activeCategory && (
-          <div className={styles.detailContent}>
-            <div className={styles.detailImageWrapper}>
-              <img 
-                src={categories[activeCategory as keyof typeof categories].image} 
-                alt={categories[activeCategory as keyof typeof categories].label} 
-                className={styles.detailImage}
-              />
-            </div>
+      {/* [MOBILE ONLY] Interactive Detail Overlay - Auto-cycles */}
+      <div className={`${styles.detailOverlay} ${activeCategory && isMobile ? styles.detailOverlayActive : ''}`}>
+        {activeCategory && isMobile && (
+          <div className={styles.detailContent} key={activeCategory}>
             <div className={styles.detailInfo}>
               <span className={styles.detailLabel}>Brewing Method</span>
               <h2 className={styles.detailTitle}>{categories[activeCategory as keyof typeof categories].title}</h2>
@@ -173,17 +189,10 @@ const HeroSection = () => {
               <Link href={categories[activeCategory as keyof typeof categories].href} className={styles.detailBtn}>
                 MUA SẢN PHẨM NÀY
               </Link>
-              
-              <button 
-                className={styles.resumeAutoBtn}
-                onClick={() => { setIsAutoPlaying(true); setActiveCategory(null); }}
-              >
-                Tiếp tục tự động →
-              </button>
             </div>
           </div>
-        )}
-      </div>
+      )}
+    </div>
     </section>
   );
 };

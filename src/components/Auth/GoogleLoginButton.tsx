@@ -6,6 +6,7 @@ import { User } from '@supabase/supabase-js';
 import { LogIn, LogOut, User as UserIcon, Loader2, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 
 export default function GoogleLoginButton() {
   const [user, setUser] = useState<User | null>(null);
@@ -43,7 +44,7 @@ export default function GoogleLoginButton() {
       if (error) throw error;
     } catch (error) {
       console.error('Error logging in:', error);
-      alert('Đăng nhập thất bại, vui lòng thử lại!');
+      toast.error('Đăng nhập thất bại, vui lòng thử lại!');
     } finally {
       setLoading(false);
     }
@@ -111,12 +112,12 @@ export default function GoogleLoginButton() {
               </div>
 
               <Link
-                href="/orders"
+                href="/account"
                 onClick={() => setIsMenuOpen(false)}
                 className="w-full flex items-center gap-3 px-4 py-2 text-[12px] font-bold text-coffee-dark hover:bg-gray-50 transition-all border-b border-gray-50 mb-1"
               >
-                <ShoppingBag size={16} className="text-coffee-light" />
-                Đơn hàng của tôi
+                <UserIcon size={16} className="text-coffee-light" />
+                Tài khoản của tôi
               </Link>
               
               <button

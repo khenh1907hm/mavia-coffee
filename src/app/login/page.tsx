@@ -2,19 +2,44 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'admin' && password === 'maviacf') {
-      alert('Đăng nhập thành công!');
+    setLoading(true);
+    
+    try {
+      const loginEmail = email.includes('@') ? email : `${email}@mavia.com`;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Check if user is admin
+      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS || '';
+      if (adminEmails && !adminEmails.includes(loginEmail)) {
+        await supabase.auth.signOut();
+        toast.error('Tài khoản không có quyền truy cập quản trị!');
+        return;
+      }
+
+      toast.success('Đăng nhập thành công!');
       router.push('/admin/dashboard');
-    } else {
-      alert('Sai tài khoản hoặc mật khẩu!');
+    } catch (error: any) {
+      toast.error('Sai tài khoản hoặc mật khẩu!');
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,14 +77,14 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <label className="block text-white/40 text-[10px] font-bold uppercase tracking-widest ml-1">
-                Tài khoản
+                Tài khoản quản trị
               </label>
               <input
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 text-white placeholder:text-white/20 outline-none transition-all font-sans focus:border-white/40 focus:bg-white/15"
-                placeholder="Admin username"
+                placeholder="admin@mavia.com"
                 required
               />
             </div>
@@ -80,10 +105,11 @@ export default function LoginPage() {
             
             <button
               type="submit"
-              className="w-full font-black py-5 rounded-xl shadow-xl transform active:scale-[0.98] transition-all duration-300 tracking-[0.2em] mt-8 uppercase text-xs hover:brightness-110"
+              disabled={loading}
+              className="w-full font-black py-5 rounded-xl shadow-xl transform active:scale-[0.98] transition-all duration-300 tracking-[0.2em] mt-8 uppercase text-xs hover:brightness-110 flex justify-center items-center gap-2 disabled:opacity-70"
               style={{ backgroundColor: COFFEE_LIGHT, color: COFFEE_DARK }}
             >
-              VÀO HỆ THỐNG
+              {loading ? <Loader2 className="animate-spin" size={16} /> : 'VÀO HỆ THỐNG'}
             </button>
           </form>
           

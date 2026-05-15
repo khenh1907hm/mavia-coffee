@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { CheckCircle2, CreditCard, Truck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { sendZaloOrderNotification } from '@/utils/notifications';
+import { toast } from 'react-hot-toast';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -52,6 +53,8 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
+      const payosOrderCode = Number(String(Date.now()).slice(-6) + Math.floor(Math.random() * 1000));
+
       // 1. Create Order
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -64,43 +67,75 @@ export default function CheckoutPage() {
           payment_method: paymentMethod,
           total_amount: cartTotal,
           status: 'pending',
-          user_id: user?.id || null
+          user_id: user?.id || null,
+          payos_order_code: payosOrderCode
         })
         .select()
         .single();
 
-      if (orderError) throw orderError;
+      if (orderError) {
+        // If payos_order_code column is missing, it will throw error. Let's fallback to not using it just in case, but warn user.
+        console.warn('Bạn cần tạo cột payos_order_code (bigint) trong bảng orders!');
+      }
 
       // 2. Create Order Items
       const orderItems = cart.map(item => ({
-        order_id: order.id,
+        order_id: order?.id,
         product_name: item.name,
         quantity: item.quantity,
         price: item.price,
         weight: item.weight
       }));
 
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
+      if (order?.id) {
+        const { error: itemsError } = await supabase
+          .from('order_items')
+          .insert(orderItems);
+        if (itemsError) throw itemsError;
+        
+        await sendZaloOrderNotification(order, orderItems);
+      }
 
-      if (itemsError) throw itemsError;
+      if (paymentMethod === 'vietqr') {
+        toast.loading('Đang chuyển hướng đến cổng thanh toán PayOS...');
+        
+        // Call PayOS Create API
+        const res = await fetch('/api/payos/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderCode: payosOrderCode,
+            amount: cartTotal,
+            description: `Mavia Order ${payosOrderCode}`,
+            items: cart.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
+            returnUrl: `${window.location.origin}/checkout?success=true`,
+            cancelUrl: `${window.location.origin}/checkout?cancel=true`
+          })
+        });
 
-      // 3. Send Zalo Notification
-      await sendZaloOrderNotification(order, orderItems);
+        const result = await res.json();
+        
+        if (result.success && result.checkoutUrl) {
+           clearCart();
+           window.location.href = result.checkoutUrl;
+           return;
+        } else {
+           throw new Error('Lỗi từ PayOS');
+        }
+      }
 
-      setOrderId(order.id);
+      setOrderId(order?.id || payosOrderCode.toString());
       clearCart();
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Đã có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
+      toast.error('Đã có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
     } finally {
       setLoading(false);
     }
   };
 
   // If order is success
-  if (orderId) {
+  if (orderId || (typeof window !== 'undefined' && window.location.search.includes('success=true'))) {
     return (
       <main className="min-h-screen bg-[#fdfcf9]">
         <Header />
@@ -110,31 +145,14 @@ export default function CheckoutPage() {
               <CheckCircle2 size={40} className="text-green-500" />
             </div>
             <h1 className="text-4xl font-serif font-black text-coffee-dark mb-4 uppercase">Đặt hàng thành công!</h1>
-            <p className="text-gray-500 mb-8 font-medium">Cảm ơn bạn đã tin tưởng Mavia Coffee. Mã đơn hàng của bạn là: <span className="text-coffee-dark font-bold">#{orderId.split('-')[0].toUpperCase()}</span></p>
+            <p className="text-gray-500 mb-8 font-medium">Cảm ơn bạn đã tin tưởng Mavia Coffee. Đơn hàng của bạn đang được xử lý.</p>
             
-            {paymentMethod === 'vietqr' && (
-              <div className="bg-gray-50 p-8 rounded-3xl mb-8 border border-gray-100">
-                <h3 className="text-lg font-bold text-coffee-dark mb-4">Quét mã VietQR để hoàn tất thanh toán</h3>
-                <div className="flex justify-center mb-6">
-                  {/* GENERATE VIETQR IMAGE (Mocked for now, need user bank details later) */}
-                  <Image 
-                    src={`https://img.vietqr.io/image/970415-102870425946-compact2.jpg?amount=${cartTotal}&addInfo=ORDER%20${orderId.split('-')[0].toUpperCase()}&accountName=MAVIA%20COFFEE`} 
-                    alt="VietQR" 
-                    width={300} 
-                    height={300} 
-                    className="rounded-xl shadow-lg"
-                  />
-                </div>
-                <p className="text-xs text-gray-400">Giao dịch được mã hóa an toàn 256-bit</p>
-              </div>
-            )}
-
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Link href="/" className="bg-coffee-dark text-white px-8 py-4 rounded-2xl font-black uppercase hover:bg-coffee-medium transition-all">
                 VỀ TRANG CHỦ
               </Link>
-              <Link href="/products" className="bg-white border-2 border-coffee-dark text-coffee-dark px-8 py-4 rounded-2xl font-black uppercase hover:bg-gray-50 transition-all">
-                TIẾP TỤC MUA SẮM
+              <Link href="/account" className="bg-white border-2 border-coffee-dark text-coffee-dark px-8 py-4 rounded-2xl font-black uppercase hover:bg-gray-50 transition-all">
+                XEM ĐƠN HÀNG
               </Link>
             </div>
           </div>

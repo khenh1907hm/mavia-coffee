@@ -108,38 +108,39 @@ export default function Testimonials() {
               <p className={styles.subtitle}>
                 Mavia cam kết mang đến những trải nghiệm hương vị tuyệt vời nhất cho mỗi khách hàng. Sự hài lòng của bạn là động lực để chúng tôi không ngừng cải tiến.
               </p>
-              
-              <div className={styles.navButtons}>
-                <button onClick={handlePrev} className={styles.navBtn} aria-label="Previous">
-                  <ChevronLeft size={24} />
-                </button>
-                <button onClick={handleNext} className={styles.navBtn} aria-label="Next">
-                  <ChevronRight size={24} />
-                </button>
-              </div>
             </ScrollReveal>
           </div>
 
           {/* Right Side: Carousel Cards */}
           <div className={styles.rightSide}>
             <ScrollReveal effect="right" delay={300}>
-              <div className={styles.carouselContainer}>
-                <div 
-                  className={styles.carouselTrack} 
-                  style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-                >
-                  {reviews.map((review) => (
-                    <div key={review.id} className={styles.carouselItem}>
-                      <div className={styles.reviewCard}>
-                        <Quote className={styles.quoteIcon} size={30} />
-                        <p className={styles.reviewText}>"{review.text}"</p>
-                        
-                        <div className={styles.reviewerInfo}>
-                          <h4 className={styles.reviewerName}>{review.name}</h4>
+              <div className={styles.carouselWrapper}>
+                {/* Navigation Buttons */}
+                <button onClick={handlePrev} className={`${styles.navBtn} ${styles.prevBtn}`} aria-label="Previous">
+                  <ChevronLeft size={24} />
+                </button>
+                <button onClick={handleNext} className={`${styles.navBtn} ${styles.nextBtn}`} aria-label="Next">
+                  <ChevronRight size={24} />
+                </button>
+
+                <div className={styles.carouselContainer}>
+                  <div 
+                    className={styles.carouselTrack} 
+                    style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+                  >
+                    {reviews.map((review) => (
+                      <div key={review.id} className={styles.carouselItem}>
+                        <div className={styles.reviewCard}>
+                          <Quote className={styles.quoteIcon} size={30} />
+                          <p className={styles.reviewText}>"{review.text}"</p>
+                          
+                          <div className={styles.reviewerInfo}>
+                            <h4 className={styles.reviewerName}>{review.name}</h4>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
 

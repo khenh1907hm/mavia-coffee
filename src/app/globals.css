@@ -25,6 +25,7 @@
 
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
+  --font-poppins: var(--font-poppins), sans-serif;
 }
 
 * {
@@ -44,6 +45,16 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair), serif;
   font-weight: 600;
   color: var(--coffee-dark);
+}
+
+/* Override for admin area to use Poppins */
+.admin-layout, .admin-layout h1, .admin-layout h2, .admin-layout h3, .admin-layout h4, .admin-layout h5, .admin-layout h6 {
+  font-family: var(--font-poppins), sans-serif !important;
+}
+
+/* Fix for buttons and links in admin */
+.admin-layout a.text-white, .admin-layout button.text-white {
+  color: #ffffff !important;
 }
 
 a {

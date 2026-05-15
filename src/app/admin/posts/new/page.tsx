@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Save, Loader2, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import RichTextEditor from '@/components/Admin/RichTextEditor';
 
 export default function PostFormPage() {
   const router = useRouter();
@@ -239,14 +240,13 @@ export default function PostFormPage() {
 
         <div className="space-y-2">
           <label className="block text-sm font-bold uppercase tracking-widest text-coffee-dark mb-1">Nội dung chi tiết</label>
-          <textarea 
-            required
-            rows={15}
-            placeholder="Viết nội dung bài viết ở đây..."
-            className="w-full px-6 py-6 bg-gray-50 border border-gray-200 rounded-3xl outline-none focus:border-coffee-light focus:ring-4 focus:ring-coffee-light/5 transition-all text-base leading-relaxed font-serif"
-            value={formData.content}
-            onChange={(e) => setFormData({...formData, content: e.target.value})}
-          />
+          <div className="prose-container">
+            <RichTextEditor 
+              value={formData.content}
+              onChange={(value) => setFormData({...formData, content: value})}
+              placeholder="Thiết kế nội dung bài viết chuyên nghiệp của bạn tại đây..."
+            />
+          </div>
         </div>
 
         <div className="flex justify-end gap-5 pt-8 border-t border-gray-50">

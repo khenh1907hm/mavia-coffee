@@ -1,74 +1,126 @@
 'use client';
 
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './Journey.module.css';
-import ScrollReveal from '@/components/ScrollReveal';
 
 const steps = [
   {
     id: '01',
     title: 'Tuyển Chọn Tại Nông Trại',
-    description: 'Chúng tôi làm việc trực tiếp với nông dân tại Đắk Lắk và Lâm Đồng để chọn ra những vườn cà phê canh tác hữu cơ, đảm bảo hạt đạt độ chín hoàn hảo.',
-    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1000&auto=format&fit=crop',
+    description: 'Chúng tôi trực tiếp đến các vùng nguyên liệu Đắk Lắk và Lâm Đồng, nơi những hạt cà phê được canh tác hữu cơ và thu hoạch thủ công khi đạt độ chín hoàn hảo nhất.',
+    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1200&auto=format&fit=crop',
+    tag: 'Nguồn Gốc'
   },
   {
     id: '02',
-    title: 'Sơ Chế Thủ Công',
-    description: 'Hạt cà phê được xử lý theo phương pháp Honey hoặc Natural để giữ trọn vẹn hương vị trái cây tự nhiên và độ ngọt nguyên bản.',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1000&auto=format&fit=crop',
+    title: 'Sơ Chế & Phơi Khô',
+    description: 'Áp dụng phương pháp Sơ chế Ướt (Washed) hoặc Phơi khô tự nhiên (Natural) trên giàn cao để kiểm soát sự lên men, giữ trọn vẹn hương vị tinh khiết của trái chín.',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop',
+    tag: 'Tỉ Mỉ'
   },
   {
     id: '03',
     title: 'Nghệ Thuật Rang Xay',
-    description: 'Mỗi mẻ cà phê được rang bằng hệ thống Hot Air hiện đại, kiểm soát nhiệt độ chính xác để đánh thức các tầng hương vị phức hợp.',
-    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1000&auto=format&fit=crop',
+    description: 'Công nghệ Full Hot Air giúp hạt chín đều từ trong ra ngoài. Nghệ nhân rang kiểm soát từng giây để đánh thức các tầng hương: từ chua thanh đến hậu ngọt sâu.',
+    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop',
+    tag: 'Công Nghệ'
   },
   {
     id: '04',
-    title: 'Thưởng Thức Trọn Vẹn',
-    description: 'Sản phẩm đến tay bạn là tâm huyết của cả một đội ngũ, mang đến trải nghiệm cà phê sạch, đậm đà và đầy cảm hứng.',
-    image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=1000&auto=format&fit=crop',
+    title: 'Trải Nghiệm Đẳng Cấp',
+    description: 'Mỗi tách cà phê Mavia là một câu chuyện về đam mê. Chúng tôi cam kết mang đến hương vị chuẩn gu, đánh thức mọi giác quan của bạn.',
+    image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=1200&auto=format&fit=crop',
+    tag: 'Thưởng Thức'
   }
 ];
 
 export default function Journey() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-10% 0px -60% 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = Number(entry.target.getAttribute('data-index'));
+          setActiveIndex(index);
+        }
+      });
+    }, observerOptions);
+
+    stepRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className={styles.section}>
-      <div className="container">
-        <ScrollReveal effect="up">
-          <div className={styles.sectionHeader}>
-            <span className={styles.subTitle}>Từ Nông Trại Đến Tách Cà Phê</span>
-            <h2>Hành Trình Của Những Hạt Cà Phê</h2>
-            <p className={styles.sectionDesc}>Hành trình tỉ mỉ và tận tâm để mang đến hương vị nguyên bản nhất.</p>
-          </div>
-        </ScrollReveal>
+      <div className="container mx-auto px-4">
+        <div className={styles.header}>
+          <div className={styles.badge}>Mavia Process</div>
+          <h2 className={styles.title}>Hành Trình Của Những Hạt Cà Phê</h2>
+          <p className={styles.subtitle}>Quy trình khép kín từ nông trại tới tay khách hàng để bảo tồn hương vị nguyên bản.</p>
+        </div>
 
-        <div className={styles.journeyGrid}>
-          {steps.map((step, idx) => (
-            <div key={step.id} className={styles.journeyItem}>
-              <ScrollReveal effect={idx % 2 === 0 ? "left" : "right"} delay={idx * 200}>
-                <div className={`${styles.itemContent} ${idx % 2 !== 0 ? styles.reverse : ''}`}>
-                  <div className={styles.imageWrapper}>
-                    <div className={styles.imageInner}>
-                      <Image 
-                        src={step.image} 
-                        alt={step.title} 
-                        width={600} 
-                        height={450} 
-                        className={styles.image}
-                      />
-                      <div className={styles.stepNumber}>{step.id}</div>
-                    </div>
-                  </div>
-                  <div className={styles.textContent}>
-                    <h3 className={styles.stepTitle}>{step.title}</h3>
-                    <p className={styles.stepDesc}>{step.description}</p>
-                    <div className={styles.decorLine}></div>
-                  </div>
+        <div className={styles.journeyContainer}>
+          {/* Left Side: Sticky Images */}
+          <div className={styles.stickySide}>
+            <div className={styles.imageStack}>
+              {steps.map((step, index) => (
+                <div 
+                  key={`img-${step.id}`} 
+                  className={`${styles.imageFrame} ${activeIndex === index ? styles.active : ''}`}
+                >
+                  <Image 
+                    src={step.image} 
+                    alt={step.title} 
+                    fill 
+                    className={styles.image}
+                    priority={index === 0}
+                  />
+                  <div className={styles.overlay}></div>
                 </div>
-              </ScrollReveal>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Right Side: Scrolling Content */}
+          <div className={styles.scrollingSide}>
+            <div className={styles.timeline}>
+              <div 
+                className={styles.progressLine} 
+                style={{ height: `${(activeIndex / (steps.length - 1)) * 100}%` }}
+              ></div>
+            </div>
+
+            {steps.map((step, index) => (
+              <div 
+                key={step.id} 
+                ref={(el) => { stepRefs.current[index] = el; }}
+                data-index={index}
+                className={`${styles.stepContent} ${activeIndex === index ? styles.stepActive : ''}`}
+              >
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepTag}>{step.tag}</span>
+                  <span className={styles.stepNum}>{step.id}</span>
+                </div>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+                <p className={styles.stepDescription}>{step.description}</p>
+                <div className={styles.stepIcon}>
+                   {/* Optional: Add custom SVG icons for each step */}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

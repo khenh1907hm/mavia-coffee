@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ProductCard.module.css';
 import { useCart } from '@/context/CartContext';
+import { toast } from 'react-hot-toast';
 
 interface variant {
   weight: string;
@@ -61,8 +62,9 @@ const ProductCard = ({ product, bestSeller }: ProductProps) => {
       slug: product.slug
     });
     
-    // Simple alert for feedback (can be improved later with toast)
-    alert(`Đã thêm ${quantity} sản phẩm ${product.name} vào giỏ hàng!`);
+    toast.success(`Đã thêm ${quantity} ${product.name} vào giỏ hàng!`, {
+      icon: '🛒',
+    });
   };
 
   return (

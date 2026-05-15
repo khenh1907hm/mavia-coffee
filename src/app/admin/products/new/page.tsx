@@ -227,19 +227,21 @@ export default function ProductFormPage() {
 
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">Danh mục</label>
+            <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">
+              Danh mục <span className="text-[10px] text-coffee-light font-bold">(Pha Máy / Pha Phin / Pour Over)</span>
+            </label>
             <select 
               required
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-coffee-light"
               value={formData.category_id}
               onChange={(e) => setFormData({...formData, category_id: e.target.value})}
             >
-              <option value="">Chọn danh mục</option>
+              <option value="">Chọn danh mục chính</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">Giá (VNĐ)</label>
+            <label className="block text-sm font-semibold uppercase tracking-wider text-gray-600">Giá Niêm Yết (VNĐ)</label>
             <input 
               required
               type="number" 

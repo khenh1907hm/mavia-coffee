@@ -4,6 +4,7 @@ import ProductGrid from '@/components/ProductGrid/ProductGrid';
 import styles from './Listing.module.css';
 import { mockProducts } from '@/data/products';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,20 +42,12 @@ export default async function ProductListing() {
           <div className={styles.layout}>
             <aside className={styles.sidebar}>
               <div className={styles.filterGroup}>
-                <h4>Phân loại</h4>
-                <ul>
-                  <li><input type="checkbox" id="cat1" /> <label htmlFor="cat1">Filter Coffee</label></li>
-                  <li><input type="checkbox" id="cat2" /> <label htmlFor="cat2">Espresso Blend</label></li>
-                  <li><input type="checkbox" id="cat3" /> <label htmlFor="cat3">Cold Brew</label></li>
-                </ul>
-              </div>
-              
-              <div className={styles.filterGroup}>
-                <h4>Độ rang</h4>
-                <ul>
-                  <li><input type="checkbox" id="r1" /> <label htmlFor="r1">Light</label></li>
-                  <li><input type="checkbox" id="r2" /> <label htmlFor="r2">Medium</label></li>
-                  <li><input type="checkbox" id="r3" /> <label htmlFor="r3">Dark</label></li>
+                <h4>Danh mục</h4>
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  <li style={{ marginBottom: '10px' }}><Link href="/products/pour-over" style={{ color: 'inherit' }}>• Pour Over</Link></li>
+                  <li style={{ marginBottom: '10px' }}><Link href="/products/pha-may" style={{ color: 'inherit' }}>• Pha Máy (Espresso)</Link></li>
+                  <li style={{ marginBottom: '10px' }}><Link href="/products/pha-phin" style={{ color: 'inherit' }}>• Pha Phin</Link></li>
+                  <li style={{ marginBottom: '10px' }}><Link href="/products" style={{ color: 'var(--coffee-light)', fontWeight: 'bold' }}>• Tất cả sản phẩm</Link></li>
                 </ul>
               </div>
             </aside>

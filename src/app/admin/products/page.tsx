@@ -28,27 +28,34 @@ export default function AdminProductsPage() {
     setLoading(false);
   };
 
-  const syncGUSeries = async () => {
-    if (!confirm('Hệ thống sẽ đồng bộ 4 dòng sản phẩm GU vào Database. Bạn có muốn tiếp tục?')) return;
+  const syncMockProducts = async () => {
+    if (!confirm('Hệ thống sẽ đồng bộ 15 sản phẩm mẫu (5 sản phẩm cho mỗi danh mục) vào Database. Bạn có muốn tiếp tục?')) return;
 
     setSyncing(true);
-    setMessage('Đang đồng bộ...');
+    setMessage('Đang đồng bộ dữ liệu mẫu...');
 
     try {
-      // First, ensure categories exist or just use IDs if already known
-      // For simplicity in this demo, we upsert directly
-      const productsToSync = mockProducts.map(p => ({
-        id: p.id,
-        name: p.name,
-        slug: p.slug,
-        description: p.description,
-        price: p.variants[0].price, // Primary price
-        image_url: p.image_url,
-        category_id: '86895ce8-89c5-43a5-bcce-e766ea99eb01', // Standard category ID
-        stock_quantity: 100,
-        // We can store variants and specs as JSONB if the DB supports it
-        // p.variants, p.specs
-      }));
+      // First, get categories to map them correctly if they exist
+      const { data: categoryData } = await supabase.from('categories').select('*');
+      
+      const productsToSync = mockProducts.map(p => {
+        // Find matching category ID if it exists in DB, else use a placeholder or null
+        const matchingCat = categoryData?.find(c => c.name.toLowerCase().includes(p.category_name.toLowerCase().split(' ')[0]));
+        
+        return {
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          description: p.description,
+          price: p.price || (p.variants && p.variants[0]?.price) || 0,
+          image_url: p.image_url,
+          category_id: matchingCat?.id || null, // Map to real category if possible
+          stock_quantity: 100,
+          // Store complex objects as JSON if columns exist, otherwise they are ignored by Supabase if not in schema
+          specs: p.specs,
+          variants: p.variants
+        };
+      });
 
       const { error } = await supabase
         .from('products')
@@ -56,7 +63,7 @@ export default function AdminProductsPage() {
 
       if (error) throw error;
 
-      setMessage('Đồng bộ thành công!');
+      setMessage('Đồng bộ 15 sản phẩm thành công!');
       fetchProducts();
       setTimeout(() => setMessage(''), 3000);
     } catch (err: any) {
@@ -87,6 +94,14 @@ export default function AdminProductsPage() {
         </div>
 
         <div className="flex gap-4">
+          <button
+            onClick={syncMockProducts}
+            disabled={syncing}
+            className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 flex items-center gap-2 hover:bg-gray-50 transition-all font-semibold disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={syncing ? 'animate-spin' : ''} />
+            <span>{syncing ? 'Đang đồng bộ...' : 'Đồng bộ mẫu (15)'}</span>
+          </button>
           <Link
             href="/admin/products/new"
             className="bg-coffee-light text-white px-8 py-3 rounded-xl flex items-center gap-3 hover:bg-coffee-medium transition-all shadow-lg shadow-coffee-dark/10 active:scale-95 font-semibold"
