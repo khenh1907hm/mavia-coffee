@@ -5,10 +5,13 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number;
   image_url: string;
-  category_name?: string;
+  category_name: string;
+  price?: number;
   description?: string;
+  hover_image_url?: string;
+  variants?: { weight: string; price: number }[];
+  specs?: any;
   [key: string]: any; // Allow for other fields from Supabase
 }
 
