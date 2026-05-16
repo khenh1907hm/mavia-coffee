@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import PayOS from '@payos/node';
+import { PayOS } from '@payos/node';
 
-const payos = new PayOS(
-  process.env.PAYOS_CLIENT_ID || 'client-id',
-  process.env.PAYOS_API_KEY || 'api-key',
-  process.env.PAYOS_CHECKSUM_KEY || 'checksum-key'
-);
+const payos = new PayOS({
+  clientId: process.env.PAYOS_CLIENT_ID || 'client-id',
+  apiKey: process.env.PAYOS_API_KEY || 'api-key',
+  checksumKey: process.env.PAYOS_CHECKSUM_KEY || 'checksum-key'
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       returnUrl,
     };
 
-    const paymentLink = await payos.createPaymentLink(requestData);
+    const paymentLink = await payos.paymentRequests.create(requestData);
 
     return NextResponse.json({
       success: true,

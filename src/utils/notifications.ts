@@ -2,7 +2,30 @@
  * Utility to send notifications via Zalo (using Zapi.vn or similar API)
  */
 
-export const sendZaloOrderNotification = async (order: any, items: any[]) => {
+interface OrderNotificationData {
+  total_amount: number;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  payment_method: string;
+  note?: string;
+}
+
+interface OrderItem {
+  product_name: string;
+  quantity: number;
+  weight: string;
+}
+
+interface ContactData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+export const sendZaloOrderNotification = async (order: OrderNotificationData, items: OrderItem[]) => {
   const token = process.env.NEXT_PUBLIC_ZALO_API_TOKEN;
   const instanceId = process.env.NEXT_PUBLIC_ZALO_INSTANCE_ID;
   const receiverPhone = process.env.NEXT_PUBLIC_ZALO_RECEIVER_PHONE;
@@ -55,7 +78,7 @@ ${itemsList}
   }
 };
 
-export const sendZaloContactNotification = async (contact: any) => {
+export const sendZaloContactNotification = async (contact: ContactData) => {
   const token = process.env.NEXT_PUBLIC_ZALO_API_TOKEN;
   const instanceId = process.env.NEXT_PUBLIC_ZALO_INSTANCE_ID;
   const receiverPhone = process.env.NEXT_PUBLIC_ZALO_RECEIVER_PHONE;

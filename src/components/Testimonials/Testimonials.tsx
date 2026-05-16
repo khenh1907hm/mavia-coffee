@@ -132,7 +132,7 @@ export default function Testimonials() {
                       <div key={review.id} className={styles.carouselItem}>
                         <div className={styles.reviewCard}>
                           <Quote className={styles.quoteIcon} size={30} />
-                          <p className={styles.reviewText}>"{review.text}"</p>
+                          <p className={styles.reviewText}>&quot;{review.text}&quot;</p>
                           
                           <div className={styles.reviewerInfo}>
                             <h4 className={styles.reviewerName}>{review.name}</h4>
